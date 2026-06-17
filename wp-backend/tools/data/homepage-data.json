@@ -1,0 +1,116 @@
+{
+  "productCategories": [
+    {
+      "title": "Carpet brand",
+      "slug": "carpet-brand",
+      "children": [
+        {
+          "title": "Mohawk Carpet",
+          "slug": "mohawk-carpet"
+        },
+        {
+          "title": "ShawContract Carpet",
+          "slug": "shawcontract-carpet"
+        },
+        {
+          "title": "TANDUS Carpet",
+          "slug": "tandus-carpet"
+        }
+      ]
+    },
+    {
+      "title": "LVT/SPC Flooring",
+      "slug": "lvt-spc-flooring",
+      "children": [
+        {
+          "title": "WALRUS",
+          "slug": "walrus"
+        },
+        {
+          "title": "Darde",
+          "slug": "darde"
+        }
+      ]
+    }
+  ],
+  "products": [
+    {
+      "id": 9001,
+      "name": "Mohawk Carpet",
+      "sku": "TEF-CARPET-MOHAWK",
+      "category": "Mohawk Carpet",
+      "categorySlug": "mohawk-carpet",
+      "permalink": "product/mohawk-carpet/",
+      "image": "wp-content/uploads/2026/04/2.jpg",
+      "hoverImage": "wp-content/uploads/2026/04/3-1.jpg",
+      "excerpt": "Mohawk Carpet options for residential, hospitality, and commercial flooring projects."
+    },
+    {
+      "id": 9002,
+      "name": "ShawContract Carpet",
+      "sku": "TEF-CARPET-SHAW",
+      "category": "ShawContract Carpet",
+      "categorySlug": "shawcontract-carpet",
+      "permalink": "product/shawcontract-carpet/",
+      "image": "wp-content/uploads/2026/04/4.jpg",
+      "hoverImage": "wp-content/uploads/2026/04/7.jpg",
+      "excerpt": "ShawContract Carpet selections for offices, hotels, retail spaces, and project flooring specifications."
+    },
+    {
+      "id": 9003,
+      "name": "TANDUS Carpet",
+      "sku": "TEF-CARPET-TANDUS",
+      "category": "TANDUS Carpet",
+      "categorySlug": "tandus-carpet",
+      "permalink": "product/tandus-carpet/",
+      "image": "wp-content/uploads/2026/04/8.jpg",
+      "hoverImage": "wp-content/uploads/2026/04/9.jpg",
+      "excerpt": "TANDUS Carpet products for durable commercial flooring programs and custom project needs."
+    },
+    {
+      "id": 9004,
+      "name": "WALRUS SPC Flooring",
+      "sku": "TEF-SPC-WALRUS",
+      "category": "WALRUS",
+      "categorySlug": "walrus",
+      "permalink": "product/walrus-spc-flooring/",
+      "image": "wp-content/uploads/2024/08/主图-1-500x500.jpg",
+      "hoverImage": "wp-content/uploads/2024/08/主图-2-500x500.jpg",
+      "excerpt": "WALRUS SPC flooring products for stable, water-resistant surface systems."
+    },
+    {
+      "id": 9005,
+      "name": "Darde LVT Flooring",
+      "sku": "TEF-LVT-DARDE",
+      "category": "Darde",
+      "categorySlug": "darde",
+      "permalink": "product/darde-lvt-flooring/",
+      "image": "wp-content/uploads/2024/08/5.jpg",
+      "hoverImage": "wp-content/uploads/2026/04/2.jpg",
+      "excerpt": "Darde LVT flooring products for resilient vinyl tile project applications."
+    }
+  ],
+  "posts": [
+    {
+      "id": 9101,
+      "title": "How to Choose Carpet for Commercial Projects",
+      "link": "how-to-choose-carpet-for-commercial-projects/",
+      "image": "wp-content/uploads/2021/04/55415166-300x164.jpg",
+      "excerpt": "A practical checklist for carpet construction, wear rating, installation conditions, and project maintenance."
+    },
+    {
+      "id": 9102,
+      "title": "LVT and SPC Flooring Selection Guide",
+      "link": "lvt-and-spc-flooring-selection-guide/",
+      "image": "wp-content/uploads/2026/04/8.jpg",
+      "excerpt": "Compare resilient flooring structures, surface finishes, and specification details for different usage scenarios."
+    },
+    {
+      "id": 9103,
+      "title": "Flooring Project Timeline from Sample to Delivery",
+      "link": "flooring-project-timeline-from-sample-to-delivery/",
+      "image": "wp-content/uploads/2026/04/7.jpg",
+      "excerpt": "See the main steps from sample confirmation and quantity planning to production, inspection, and delivery."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+.DS_Store
+.playwright-cli/
+
+# Local tooling
+.tools/
+
+# WordPress runtime secrets and mutable data
+wp-backend/wp-config.php
+wp-backend/wp-content/database/.ht.sqlite
+wp-backend/wp-content/database/*.sqlite
+wp-backend/wp-content/database/*.db
+wp-backend/wp-content/cache/
+wp-backend/wp-content/upgrade/
+wp-backend/wp-content/backups/
+wp-backend/wp-content/ai1wm-backups/
+wp-backend/wp-content/debug.log
+
+# Deployment artifacts
+*.sql
+*.tar
+*.tar.gz
+*.zip
