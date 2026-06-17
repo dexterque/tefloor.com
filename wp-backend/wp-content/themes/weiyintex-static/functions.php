@@ -1,6 +1,6 @@
 <?php
 /**
- * Theme helpers for the static Weiyintex homepage.
+ * Theme helpers for the static Tefloor homepage.
  *
  * @package WeiyintexStatic
  */
@@ -52,12 +52,19 @@ add_action(
 function weiyintex_rewrite_static_export_urls( $html ) {
 	$home         = home_url();
 	$home_escaped = str_replace( '/', '\\/', $home );
+	$home_encoded = rawurlencode( home_url( '/' ) );
+
+	$html = preg_replace( '/<!--\\s*Mirrored from .*?-->\\s*/i', '', $html );
 
 	$replacements = array(
-		'https://weiyintex.com' => $home,
-		'http://weiyintex.com'  => $home,
-		'https:\\/\\/weiyintex.com' => $home_escaped,
-		'http:\\/\\/weiyintex.com'  => $home_escaped,
+		'https://weiyintex.com'          => $home,
+		'http://weiyintex.com'           => $home,
+		'https:\\/\\/weiyintex.com'      => $home_escaped,
+		'http:\\/\\/weiyintex.com'       => $home_escaped,
+		'https%3A%2F%2Fweiyintex.com%2F' => $home_encoded,
+		'http%3A%2F%2Fweiyintex.com%2F'  => $home_encoded,
+		'www.weiyintex.com'              => 'Tefloor',
+		'weiyintex.com'                  => wp_parse_url( $home, PHP_URL_HOST ),
 		'href="wp-content/'    => 'href="' . home_url( '/wp-content/' ),
 		"href='wp-content/"    => "href='" . home_url( '/wp-content/' ),
 		'src="wp-content/'     => 'src="' . home_url( '/wp-content/' ),
