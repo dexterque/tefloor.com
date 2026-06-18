@@ -367,9 +367,19 @@ function weiyintex_simple_head( $title = '' ) {
 			.weiyintex-card img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: #f3f3f5; }
 			.weiyintex-card h2, .weiyintex-card h3 { font-size: 17px; line-height: 1.35; margin: 14px 0 0; }
 			.weiyintex-card a { color: #16141a; text-decoration: none; }
+			.weiyintex-blog-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; }
+			.weiyintex-blog-card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid rgba(39, 59, 146, 0.12); border-radius: 8px; background: #fff; box-shadow: 0 12px 30px rgba(20, 24, 39, 0.06); }
+			.weiyintex-blog-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; background: #f3f3f5; }
+			.weiyintex-blog-card-body { display: flex; flex: 1; flex-direction: column; padding: 20px; }
+			.weiyintex-blog-card time { margin-bottom: 10px; color: #6e7280; font-size: 13px; font-weight: 500; }
+			.weiyintex-blog-card h2 { margin: 0 0 12px; color: #141827; font-size: 21px; line-height: 1.3; letter-spacing: 0; }
+			.weiyintex-blog-card p { margin: 0 0 18px; color: #4f5668; font-size: 15px; line-height: 1.65; }
+			.weiyintex-blog-card a { color: inherit; text-decoration: none; }
+			.weiyintex-blog-more { margin-top: auto; color: var(--tefloor-blue) !important; font-weight: 700; }
+			.weiyintex-blog-empty { margin: 0; color: #4f5668; }
 			.weiyintex-shell-footer { border-top: 1px solid #ececf0; padding: 28px 0; color: #696773; font-size: 13px; }
-			@media (max-width: 900px) { .weiyintex-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .weiyintex-shell-nav { align-items: flex-start; flex-direction: column; min-height: 0; gap: 14px; padding: 18px 24px 14px; } .weiyintex-shell-logo img { width: 128px; } .weiyintex-shell-menu { width: 100%; justify-content: flex-start; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .weiyintex-shell-menu::-webkit-scrollbar { display: none; } .weiyintex-shell-menu ul#menu-main-menu { flex-wrap: nowrap; min-width: max-content; gap: 4px; } .weiyintex-shell-menu a.ct-menu-link { min-height: 36px; padding: 0 12px !important; font-size: 14px !important; } }
-			@media (max-width: 560px) { .weiyintex-grid { grid-template-columns: 1fr; } .weiyintex-shell-nav { padding-right: 18px; padding-left: 18px; } .weiyintex-page-hero h1 { font-size: 34px; } }
+			@media (max-width: 900px) { .weiyintex-grid, .weiyintex-blog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .weiyintex-shell-nav { align-items: flex-start; flex-direction: column; min-height: 0; gap: 14px; padding: 18px 24px 14px; } .weiyintex-shell-logo img { width: 128px; } .weiyintex-shell-menu { width: 100%; justify-content: flex-start; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .weiyintex-shell-menu::-webkit-scrollbar { display: none; } .weiyintex-shell-menu ul#menu-main-menu { flex-wrap: nowrap; min-width: max-content; gap: 4px; } .weiyintex-shell-menu a.ct-menu-link { min-height: 36px; padding: 0 12px !important; font-size: 14px !important; } }
+			@media (max-width: 560px) { .weiyintex-grid, .weiyintex-blog-grid { grid-template-columns: 1fr; } .weiyintex-shell-nav { padding-right: 18px; padding-left: 18px; } .weiyintex-page-hero h1 { font-size: 34px; } }
 		</style>
 		<?php wp_head(); ?>
 	</head>
@@ -1173,6 +1183,56 @@ function weiyintex_render_home_posts( $limit = 3 ) {
 		</div>
 		<?php
 	}
+
+	wp_reset_postdata();
+}
+
+function weiyintex_render_blog_posts( $limit = 12 ) {
+	$posts = new WP_Query(
+		array(
+			'post_type'           => 'post',
+			'post_status'         => 'publish',
+			'posts_per_page'      => $limit,
+			'ignore_sticky_posts' => true,
+		)
+	);
+
+	if ( ! $posts->have_posts() ) {
+		echo '<p class="weiyintex-blog-empty">No posts published yet.</p>';
+		return;
+	}
+
+	echo '<div class="weiyintex-blog-grid">';
+
+	while ( $posts->have_posts() ) {
+		$posts->the_post();
+
+		$post_id   = get_the_ID();
+		$title     = get_the_title();
+		$permalink = get_permalink();
+		$image     = weiyintex_post_image_url( $post_id );
+		$excerpt   = get_the_excerpt();
+
+		if ( ! $excerpt ) {
+			$excerpt = wp_trim_words( wp_strip_all_tags( get_the_content() ), 24 );
+		}
+
+		?>
+		<article class="weiyintex-blog-card">
+			<a href="<?php echo esc_url( $permalink ); ?>">
+				<img loading="lazy" decoding="async" src="<?php echo esc_url( $image ); ?>" alt="<?php echo esc_attr( $title ); ?>">
+			</a>
+			<div class="weiyintex-blog-card-body">
+				<time datetime="<?php echo esc_attr( get_the_date( DATE_W3C ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
+				<h2><a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a></h2>
+				<p><?php echo esc_html( $excerpt ); ?></p>
+				<a class="weiyintex-blog-more" href="<?php echo esc_url( $permalink ); ?>">Read more</a>
+			</div>
+		</article>
+		<?php
+	}
+
+	echo '</div>';
 
 	wp_reset_postdata();
 }
