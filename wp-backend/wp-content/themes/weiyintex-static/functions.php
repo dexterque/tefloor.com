@@ -838,13 +838,13 @@ function weiyintex_admin_media_field( $path, $label, $description = '' ) {
 		</div>
 		<input id="<?php echo esc_attr( $id_field_id ); ?>" type="hidden" name="<?php echo weiyintex_admin_field_name( $id_path ); ?>" value="<?php echo esc_attr( (string) $attachment_id ); ?>">
 		<p>
-			<label for="<?php echo esc_attr( $path_field_id ); ?>">Fallback path or URL</label>
+			<label for="<?php echo esc_attr( $path_field_id ); ?>">备用路径或图片 URL</label>
 			<input id="<?php echo esc_attr( $path_field_id ); ?>" class="widefat weiyintex-media-path" type="text" name="<?php echo weiyintex_admin_field_name( $path ); ?>" value="<?php echo esc_attr( weiyintex_site_text( $path ) ); ?>">
 		</p>
 		<p>
-			<button type="button" class="button weiyintex-select-media" data-target-id="<?php echo esc_attr( $id_field_id ); ?>" data-target-path="<?php echo esc_attr( $path_field_id ); ?>" data-preview="<?php echo esc_attr( $preview_id ); ?>">Choose from Media Library</button>
-			<button type="button" class="button weiyintex-remove-media" data-target-id="<?php echo esc_attr( $id_field_id ); ?>" data-preview="<?php echo esc_attr( $preview_id ); ?>">Remove media ID</button>
-			<span class="description">Attachment ID: <span class="weiyintex-current-id"><?php echo esc_html( (string) $attachment_id ); ?></span></span>
+			<button type="button" class="button weiyintex-select-media" data-target-id="<?php echo esc_attr( $id_field_id ); ?>" data-target-path="<?php echo esc_attr( $path_field_id ); ?>" data-preview="<?php echo esc_attr( $preview_id ); ?>">从媒体库选择</button>
+			<button type="button" class="button weiyintex-remove-media" data-target-id="<?php echo esc_attr( $id_field_id ); ?>" data-preview="<?php echo esc_attr( $preview_id ); ?>">移除媒体 ID</button>
+			<span class="description">媒体 ID：<span class="weiyintex-current-id"><?php echo esc_html( (string) $attachment_id ); ?></span></span>
 		</p>
 		<?php if ( $description ) : ?>
 			<p class="description"><?php echo esc_html( $description ); ?></p>
@@ -856,7 +856,7 @@ function weiyintex_admin_media_field( $path, $label, $description = '' ) {
 add_action(
 	'admin_menu',
 	function () {
-		add_theme_page( 'Weiyintex Site Content', 'Site Content', 'manage_options', 'weiyintex-site-content', 'weiyintex_render_site_content_admin' );
+		add_theme_page( '站点内容配置', '站点内容配置', 'manage_options', 'weiyintex-site-content', 'weiyintex_render_site_content_admin' );
 	}
 );
 
@@ -878,7 +878,7 @@ add_action(
 				$(document).on('click', '.weiyintex-select-media', function(e){
 					e.preventDefault();
 					var button = $(this);
-					var frame = wp.media({ title: 'Select image', library: { type: 'image' }, multiple: false });
+					var frame = wp.media({ title: '选择图片', library: { type: 'image' }, multiple: false });
 					frame.on('select', function(){
 						var attachment = frame.state().get('selection').first().toJSON();
 						$('#' + button.data('target-id')).val(attachment.id);
@@ -909,109 +909,109 @@ function weiyintex_render_site_content_admin() {
 		$raw = wp_unslash( $_POST['weiyintex_site_content'] );
 		update_option( 'weiyintex_site_content', weiyintex_sanitize_site_content( $raw ) );
 		weiyintex_site_options( true );
-		echo '<div class="notice notice-success is-dismissible"><p>Site content saved.</p></div>';
+		echo '<div class="notice notice-success is-dismissible"><p>站点内容已保存。</p></div>';
 	}
 
 	?>
 	<div class="wrap weiyintex-content-admin">
-		<h1>Weiyintex Site Content</h1>
-		<p>Edit homepage, contact, and footer content used by the active theme.</p>
+		<h1>站点内容配置</h1>
+		<p>编辑当前主题使用的首页、联系信息和页脚内容。</p>
 		<form method="post">
 			<?php wp_nonce_field( 'weiyintex_site_content', 'weiyintex_site_content_nonce' ); ?>
 
-			<h2>Brand</h2>
-			<?php weiyintex_admin_media_field( 'brand.logo', 'Logo image', 'Choose from Media Library. The text path remains only as a fallback.' ); ?>
+			<h2>品牌</h2>
+			<?php weiyintex_admin_media_field( 'brand.logo', 'Logo 图片', '从媒体库选择。文本路径仅作为备用。' ); ?>
 
-			<h2>Hero</h2>
+			<h2>首页首屏</h2>
 			<?php
-			weiyintex_admin_media_field( 'hero.background', 'Background image', 'Used behind the homepage hero title.' );
-			weiyintex_admin_text_field( 'hero.title', 'Title' );
-			weiyintex_admin_textarea_field( 'hero.subtitle', 'Subtitle' );
-			weiyintex_admin_text_field( 'hero.button_text', 'Button text' );
-			weiyintex_admin_text_field( 'hero.button_url', 'Button URL', 'Examples: contact-us, products, #section-id, tel:+861234567890.' );
+			weiyintex_admin_media_field( 'hero.background', '背景图', '用于首页首屏标题背后的背景。' );
+			weiyintex_admin_text_field( 'hero.title', '标题' );
+			weiyintex_admin_textarea_field( 'hero.subtitle', '副标题' );
+			weiyintex_admin_text_field( 'hero.button_text', '按钮文字' );
+			weiyintex_admin_text_field( 'hero.button_url', '按钮链接', '示例：contact-us、products、#section-id、tel:+861234567890。' );
 			?>
 
-			<h2>Feature Cards</h2>
+			<h2>优势卡片</h2>
 			<?php for ( $i = 0; $i < 4; $i++ ) : ?>
-				<h3>Feature <?php echo esc_html( (string) ( $i + 1 ) ); ?></h3>
+				<h3>优势 <?php echo esc_html( (string) ( $i + 1 ) ); ?></h3>
 				<?php
-				weiyintex_admin_media_field( "features.$i.image", 'Image' );
-				weiyintex_admin_text_field( "features.$i.title", 'Title' );
-				weiyintex_admin_textarea_field( "features.$i.description", 'Description' );
+				weiyintex_admin_media_field( "features.$i.image", '图片' );
+				weiyintex_admin_text_field( "features.$i.title", '标题' );
+				weiyintex_admin_textarea_field( "features.$i.description", '描述' );
 				?>
 			<?php endfor; ?>
 
-			<h2>Products Section</h2>
+			<h2>产品区块</h2>
 			<?php
-			weiyintex_admin_text_field( 'products.title', 'Title' );
-			weiyintex_admin_textarea_field( 'products.description', 'Description' );
-			weiyintex_admin_text_field( 'products.button_text', 'Button text' );
-			weiyintex_admin_text_field( 'products.button_url', 'Button URL' );
+			weiyintex_admin_text_field( 'products.title', '标题' );
+			weiyintex_admin_textarea_field( 'products.description', '描述' );
+			weiyintex_admin_text_field( 'products.button_text', '按钮文字' );
+			weiyintex_admin_text_field( 'products.button_url', '按钮链接' );
 			?>
 
-			<h2>Intro and Stats</h2>
+			<h2>介绍与数据</h2>
 			<?php
-			weiyintex_admin_media_field( 'intro.background', 'Intro background image', 'Used behind the Intro and Stats headline section.' );
-			weiyintex_admin_textarea_field( 'intro.headline_html', 'Intro headline HTML' );
-			weiyintex_admin_textarea_field( 'intro.body_html', 'Intro body HTML' );
+			weiyintex_admin_media_field( 'intro.background', '介绍区背景图', '用于介绍与数据区块标题背后的背景。' );
+			weiyintex_admin_textarea_field( 'intro.headline_html', '介绍标题 HTML' );
+			weiyintex_admin_textarea_field( 'intro.body_html', '介绍正文 HTML' );
 			?>
 			<?php for ( $i = 0; $i < 4; $i++ ) : ?>
-				<h3>Stat <?php echo esc_html( (string) ( $i + 1 ) ); ?></h3>
+				<h3>数据 <?php echo esc_html( (string) ( $i + 1 ) ); ?></h3>
 				<?php
-				weiyintex_admin_text_field( "stats.$i.title", 'Title' );
-				weiyintex_admin_textarea_field( "stats.$i.description", 'Description' );
+				weiyintex_admin_text_field( "stats.$i.title", '标题' );
+				weiyintex_admin_textarea_field( "stats.$i.description", '描述' );
 				?>
 			<?php endfor; ?>
 
-			<h2>About Section</h2>
+			<h2>关于我们区块</h2>
 			<?php
-			weiyintex_admin_media_field( 'about.image', 'Image' );
-			weiyintex_admin_text_field( 'about.title', 'Title' );
-			weiyintex_admin_textarea_field( 'about.body_html', 'Body HTML' );
-			weiyintex_admin_text_field( 'about.button_text', 'Button text' );
-			weiyintex_admin_text_field( 'about.button_url', 'Button URL' );
+			weiyintex_admin_media_field( 'about.image', '图片' );
+			weiyintex_admin_text_field( 'about.title', '标题' );
+			weiyintex_admin_textarea_field( 'about.body_html', '正文 HTML' );
+			weiyintex_admin_text_field( 'about.button_text', '按钮文字' );
+			weiyintex_admin_text_field( 'about.button_url', '按钮链接' );
 			?>
 
-			<h2>Why Choose Us</h2>
+			<h2>为什么选择我们</h2>
 			<?php
-			weiyintex_admin_text_field( 'why.title', 'Title' );
-			weiyintex_admin_textarea_field( 'why.subtitle', 'Subtitle' );
+			weiyintex_admin_text_field( 'why.title', '标题' );
+			weiyintex_admin_textarea_field( 'why.subtitle', '副标题' );
 			?>
 			<?php for ( $i = 0; $i < 5; $i++ ) : ?>
-				<h3>Reason <?php echo esc_html( (string) ( $i + 1 ) ); ?></h3>
+				<h3>理由 <?php echo esc_html( (string) ( $i + 1 ) ); ?></h3>
 				<?php
-				weiyintex_admin_media_field( "why.items.$i.image", 'Image' );
-				weiyintex_admin_text_field( "why.items.$i.title", 'Title' );
-				weiyintex_admin_textarea_field( "why.items.$i.description", 'Description' );
+				weiyintex_admin_media_field( "why.items.$i.image", '图片' );
+				weiyintex_admin_text_field( "why.items.$i.title", '标题' );
+				weiyintex_admin_textarea_field( "why.items.$i.description", '描述' );
 				?>
 			<?php endfor; ?>
 
-			<h2>Blog, Contact, Footer</h2>
+			<h2>博客、联系信息、页脚</h2>
 			<?php
-			weiyintex_admin_text_field( 'blog.title', 'Blog title' );
-			weiyintex_admin_text_field( 'contact.heading', 'Contact heading' );
-			weiyintex_admin_text_field( 'contact.email', 'Email' );
-			weiyintex_admin_text_field( 'contact.phone', 'Phone' );
-			weiyintex_admin_text_field( 'contact.wechat', 'Wechat' );
+			weiyintex_admin_text_field( 'blog.title', '博客标题' );
+			weiyintex_admin_text_field( 'contact.heading', '联系区标题' );
+			weiyintex_admin_text_field( 'contact.email', '邮箱' );
+			weiyintex_admin_text_field( 'contact.phone', '电话' );
+			weiyintex_admin_text_field( 'contact.wechat', '微信' );
 			weiyintex_admin_text_field( 'contact.whatsapp', 'WhatsApp' );
-			weiyintex_admin_text_field( 'contact.whatsapp_message', 'WhatsApp message' );
-			weiyintex_admin_text_field( 'footer.company_title', 'Footer company title' );
-			weiyintex_admin_text_field( 'footer.product_title', 'Footer product title' );
-			weiyintex_admin_textarea_field( 'footer.description', 'Footer description' );
-			weiyintex_admin_text_field( 'footer.copyright', 'Copyright' );
+			weiyintex_admin_text_field( 'contact.whatsapp_message', 'WhatsApp 默认消息' );
+			weiyintex_admin_text_field( 'footer.company_title', '页脚公司标题' );
+			weiyintex_admin_text_field( 'footer.product_title', '页脚产品标题' );
+			weiyintex_admin_textarea_field( 'footer.description', '页脚描述' );
+			weiyintex_admin_text_field( 'footer.copyright', '版权信息' );
 			?>
 
-			<h2>Popup Form Labels</h2>
+			<h2>弹窗表单标签</h2>
 			<?php
-			weiyintex_admin_text_field( 'form.title', 'Form title' );
-			weiyintex_admin_text_field( 'form.name_label', 'Name label' );
-			weiyintex_admin_text_field( 'form.email_label', 'Email label' );
-			weiyintex_admin_text_field( 'form.phone_label', 'Phone label' );
-			weiyintex_admin_text_field( 'form.message_label', 'Message label' );
-			weiyintex_admin_text_field( 'form.submit_label', 'Submit label' );
+			weiyintex_admin_text_field( 'form.title', '表单标题' );
+			weiyintex_admin_text_field( 'form.name_label', '姓名标签' );
+			weiyintex_admin_text_field( 'form.email_label', '邮箱标签' );
+			weiyintex_admin_text_field( 'form.phone_label', '电话标签' );
+			weiyintex_admin_text_field( 'form.message_label', '留言标签' );
+			weiyintex_admin_text_field( 'form.submit_label', '提交按钮文字' );
 			?>
 
-			<?php submit_button( 'Save Site Content' ); ?>
+			<?php submit_button( '保存站点内容' ); ?>
 		</form>
 	</div>
 	<?php

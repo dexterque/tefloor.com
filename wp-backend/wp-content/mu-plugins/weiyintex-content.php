@@ -16,10 +16,16 @@ add_action(
 			'weiyintex_product',
 			array(
 				'labels'       => array(
-					'name'          => 'Products',
-					'singular_name' => 'Product',
-					'add_new_item'  => 'Add New Product',
-					'edit_item'     => 'Edit Product',
+					'name'          => '产品',
+					'singular_name' => '产品',
+					'add_new'       => '新增产品',
+					'add_new_item'  => '新增产品',
+					'edit_item'     => '编辑产品',
+					'new_item'      => '新产品',
+					'view_item'     => '查看产品',
+					'search_items'  => '搜索产品',
+					'all_items'     => '全部产品',
+					'menu_name'     => '产品',
 				),
 				'public'       => true,
 				'show_in_rest' => true,
@@ -35,8 +41,15 @@ add_action(
 			array( 'weiyintex_product' ),
 			array(
 				'labels'       => array(
-					'name'          => 'Product Categories',
-					'singular_name' => 'Product Category',
+					'name'          => '产品分类',
+					'singular_name' => '产品分类',
+					'search_items'  => '搜索产品分类',
+					'all_items'     => '全部产品分类',
+					'edit_item'     => '编辑产品分类',
+					'update_item'   => '更新产品分类',
+					'add_new_item'  => '新增产品分类',
+					'new_item_name' => '新产品分类名称',
+					'menu_name'     => '产品分类',
 				),
 				'hierarchical' => true,
 				'public'       => true,
@@ -99,7 +112,7 @@ add_action(
 				$(document).on('click', '.weiyintex-product-select-media', function(e){
 					e.preventDefault();
 					var button = $(this);
-					var frame = wp.media({ title: 'Select product image', library: { type: 'image' }, multiple: false });
+					var frame = wp.media({ title: '选择产品图片', library: { type: 'image' }, multiple: false });
 					frame.on('select', function(){
 						var attachment = frame.state().get('selection').first().toJSON();
 						$('#' + button.data('target-id')).val(attachment.id);
@@ -122,7 +135,7 @@ add_action(
 add_action(
 	'add_meta_boxes',
 	function () {
-		add_meta_box( 'weiyintex_product_details', 'Product Details', 'weiyintex_render_product_details_box', 'weiyintex_product', 'normal', 'high' );
+		add_meta_box( 'weiyintex_product_details', '产品详情', 'weiyintex_render_product_details_box', 'weiyintex_product', 'normal', 'high' );
 	}
 );
 
@@ -132,13 +145,13 @@ function weiyintex_render_product_details_box( $post ) {
 	$sku = get_post_meta( $post->ID, '_weiyintex_sku', true );
 	?>
 	<p>
-		<label for="_weiyintex_sku"><strong>SKU</strong></label>
+		<label for="_weiyintex_sku"><strong>产品编号 SKU</strong></label>
 		<input id="_weiyintex_sku" name="_weiyintex_sku" type="text" value="<?php echo esc_attr( $sku ); ?>" class="widefat" />
 	</p>
 	<?php
-	weiyintex_render_product_media_field( $post->ID, '_weiyintex_image', 'Primary image' );
-	weiyintex_render_product_media_field( $post->ID, '_weiyintex_hover_image', 'Hover image' );
-	echo '<p class="description">Images should be selected from the WordPress Media Library. The path fields are kept as fallbacks for legacy mirrored assets.</p>';
+	weiyintex_render_product_media_field( $post->ID, '_weiyintex_image', '主图' );
+	weiyintex_render_product_media_field( $post->ID, '_weiyintex_hover_image', '悬停图' );
+	echo '<p class="description">图片建议从 WordPress 媒体库选择。路径字段仅作为旧数据或备用图片地址保留。</p>';
 }
 
 function weiyintex_render_product_media_field( $post_id, $path_key, $label ) {
@@ -157,12 +170,12 @@ function weiyintex_render_product_media_field( $post_id, $path_key, $label ) {
 		</div>
 		<input id="<?php echo esc_attr( $field_id ); ?>_id" name="<?php echo esc_attr( $id_key ); ?>" type="hidden" value="<?php echo esc_attr( (string) $attachment_id ); ?>">
 		<p>
-			<label for="<?php echo esc_attr( $field_id ); ?>_path">Fallback path or URL</label>
+			<label for="<?php echo esc_attr( $field_id ); ?>_path">备用路径或图片 URL</label>
 			<input id="<?php echo esc_attr( $field_id ); ?>_path" name="<?php echo esc_attr( $path_key ); ?>" type="text" value="<?php echo esc_attr( $path ); ?>" class="widefat" />
 		</p>
 		<p>
-			<button type="button" class="button weiyintex-product-select-media" data-target-id="<?php echo esc_attr( $field_id ); ?>_id" data-target-path="<?php echo esc_attr( $field_id ); ?>_path" data-preview="<?php echo esc_attr( $field_id ); ?>_preview">Choose from Media Library</button>
-			<button type="button" class="button weiyintex-product-remove-media" data-target-id="<?php echo esc_attr( $field_id ); ?>_id" data-preview="<?php echo esc_attr( $field_id ); ?>_preview">Remove media ID</button>
+			<button type="button" class="button weiyintex-product-select-media" data-target-id="<?php echo esc_attr( $field_id ); ?>_id" data-target-path="<?php echo esc_attr( $field_id ); ?>_path" data-preview="<?php echo esc_attr( $field_id ); ?>_preview">从媒体库选择</button>
+			<button type="button" class="button weiyintex-product-remove-media" data-target-id="<?php echo esc_attr( $field_id ); ?>_id" data-preview="<?php echo esc_attr( $field_id ); ?>_preview">移除媒体 ID</button>
 		</p>
 	</div>
 	<?php
