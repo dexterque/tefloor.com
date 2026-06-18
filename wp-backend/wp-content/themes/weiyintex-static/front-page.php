@@ -293,6 +293,159 @@ body,
 	height: 16px;
 }
 
+#offcanvas .ct-panel-inner {
+	background: #273B92;
+	background-image:
+		linear-gradient(30deg, rgba(255, 255, 255, 0.04) 12%, transparent 12.5%, transparent 87%, rgba(255, 255, 255, 0.04) 87.5%, rgba(255, 255, 255, 0.04)),
+		linear-gradient(150deg, rgba(255, 255, 255, 0.04) 12%, transparent 12.5%, transparent 87%, rgba(255, 255, 255, 0.04) 87.5%, rgba(255, 255, 255, 0.04)),
+		linear-gradient(30deg, rgba(255, 255, 255, 0.04) 12%, transparent 12.5%, transparent 87%, rgba(255, 255, 255, 0.04) 87.5%, rgba(255, 255, 255, 0.04)),
+		linear-gradient(150deg, rgba(255, 255, 255, 0.04) 12%, transparent 12.5%, transparent 87%, rgba(255, 255, 255, 0.04) 87.5%, rgba(255, 255, 255, 0.04)),
+		linear-gradient(60deg, rgba(255, 255, 255, 0.035) 25%, transparent 25.5%, transparent 75%, rgba(255, 255, 255, 0.035) 75%, rgba(255, 255, 255, 0.035)),
+		linear-gradient(60deg, rgba(255, 255, 255, 0.035) 25%, transparent 25.5%, transparent 75%, rgba(255, 255, 255, 0.035) 75%, rgba(255, 255, 255, 0.035));
+	background-position: 0 0, 0 0, 34px 60px, 34px 60px, 0 0, 34px 60px;
+	background-size: 68px 120px;
+}
+
+#offcanvas .ct-panel-content-inner {
+	padding: 88px 34px 40px 48px;
+}
+
+#offcanvas .mobile-menu ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#offcanvas .mobile-menu .menu-item {
+	position: relative;
+	margin: 0 0 22px;
+	padding: 0;
+}
+
+#offcanvas .mobile-menu .ct-menu-link {
+	display: inline-flex;
+	max-width: calc(100% - 56px);
+	align-items: center;
+	color: #fff;
+	font-size: 34px;
+	font-weight: 700;
+	line-height: 1.18;
+	letter-spacing: 0;
+	text-decoration: none;
+}
+
+#offcanvas .mobile-menu .current-menu-item > .ct-menu-link {
+	color: rgba(255, 255, 255, 0.58);
+}
+
+#offcanvas .mobile-menu .ct-toggle-dropdown-mobile {
+	position: absolute;
+	top: -2px;
+	right: 0;
+	display: inline-flex !important;
+	width: 44px;
+	height: 44px;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: rgba(255, 255, 255, 0.74);
+	cursor: pointer;
+}
+
+#offcanvas .mobile-menu .ct-toggle-dropdown-mobile:hover,
+#offcanvas .mobile-menu .ct-toggle-dropdown-mobile:focus-visible {
+	background: rgba(255, 255, 255, 0.1);
+	color: #fff;
+	outline: none;
+}
+
+#offcanvas .mobile-menu .ct-toggle-dropdown-mobile svg {
+	transition: transform 0.18s ease;
+}
+
+#offcanvas .mobile-menu .menu-item.is-open > .ct-toggle-dropdown-mobile svg {
+	transform: rotate(180deg);
+}
+
+#offcanvas .mobile-menu .sub-menu {
+	display: none !important;
+	position: static !important;
+	left: auto !important;
+	top: auto !important;
+	width: auto !important;
+	min-width: 0 !important;
+	margin: 20px 0 0;
+	padding: 0 0 0 44px;
+}
+
+#offcanvas .mobile-menu .menu-item.is-open > .sub-menu {
+	display: grid !important;
+	gap: 18px;
+	visibility: visible !important;
+	opacity: 1 !important;
+	transform: none !important;
+	pointer-events: auto !important;
+}
+
+#offcanvas .mobile-menu .sub-menu .menu-item {
+	margin: 0;
+}
+
+#offcanvas .mobile-menu .menu-item.is-open > .sub-menu > .menu-item,
+#offcanvas .mobile-menu .menu-item.is-open > .sub-menu > .menu-item > .ct-menu-link,
+#offcanvas .mobile-menu .menu-item.is-open > .sub-menu > .menu-item > .ct-toggle-dropdown-mobile {
+	visibility: visible !important;
+	opacity: 1 !important;
+	transform: none !important;
+	pointer-events: auto !important;
+}
+
+#offcanvas .mobile-menu .sub-menu .ct-menu-link {
+	max-width: calc(100% - 52px);
+	font-size: 25px;
+	line-height: 1.3;
+}
+
+#offcanvas .mobile-menu .sub-menu-depth-2 {
+	position: relative;
+	margin-top: 18px;
+	padding-left: 32px;
+	background: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+
+#offcanvas .mobile-menu .sub-menu-depth-2::before {
+	content: "";
+	position: absolute;
+	top: 8px;
+	bottom: 8px;
+	left: 6px;
+	border-left: 2px dotted rgba(255, 255, 255, 0.28);
+}
+
+#offcanvas .mobile-menu .sub-menu-depth-2 .ct-menu-link {
+	font-size: 24px;
+}
+
+@media (max-width: 480px) {
+	#offcanvas .ct-panel-content-inner {
+		padding-right: 28px;
+		padding-left: 36px;
+	}
+
+	#offcanvas .mobile-menu .ct-menu-link {
+		font-size: 28px;
+	}
+
+	#offcanvas .mobile-menu .sub-menu .ct-menu-link {
+		font-size: 23px;
+	}
+}
+
 .elementor-618 .elementor-element.elementor-element-e0d9386 .elementor-button,
 .elementor-618 .elementor-element.elementor-element-44136c6 .elementor-button,
 .elementor-618 .elementor-element.elementor-element-5d2ff1e .elementor-button,
@@ -1494,6 +1647,7 @@ var ekit_config = {"ajaxurl":"https://weiyintex.com/wp-admin/admin-ajax.php","no
 			}
 
 			offcanvas.removeAttribute('aria-hidden');
+			setupMobileDropdowns(offcanvas);
 
 			var trigger = getTrigger();
 
@@ -1502,7 +1656,55 @@ var ekit_config = {"ajaxurl":"https://weiyintex.com/wp-admin/admin-ajax.php","no
 			}
 		}
 
+		function getDirectSubmenu(menuItem) {
+			var children = Array.prototype.slice.call(menuItem.children);
+
+			return children.find(function (child) {
+				return child.classList && child.classList.contains('sub-menu');
+			});
+		}
+
+		function setMobileSubmenuState(menuItem, shouldOpen) {
+			var toggle = menuItem.querySelector(':scope > .ct-toggle-dropdown-mobile');
+			var submenu = getDirectSubmenu(menuItem);
+
+			if (!toggle || !submenu) {
+				return;
+			}
+
+			menuItem.classList.toggle('is-open', shouldOpen);
+			toggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+			toggle.setAttribute('aria-label', shouldOpen ? 'Collapse dropdown menu' : 'Expand dropdown menu');
+			submenu.hidden = !shouldOpen;
+		}
+
+		function setupMobileDropdowns(scope) {
+			var menuItems = scope.querySelectorAll('.mobile-menu .menu-item-has-children');
+
+			menuItems.forEach(function (menuItem) {
+				if (menuItem.dataset.tefloorDropdownReady) {
+					return;
+				}
+
+				menuItem.dataset.tefloorDropdownReady = 'true';
+				setMobileSubmenuState(menuItem, menuItem.classList.contains('current-menu-parent') || menuItem.classList.contains('current-menu-ancestor'));
+			});
+		}
+
 		document.addEventListener('click', function (event) {
+			var mobileToggle = event.target.closest('#offcanvas .ct-toggle-dropdown-mobile');
+
+			if (mobileToggle) {
+				var menuItem = mobileToggle.closest('.menu-item-has-children');
+
+				if (menuItem) {
+					event.preventDefault();
+					event.stopPropagation();
+					setMobileSubmenuState(menuItem, 'true' !== mobileToggle.getAttribute('aria-expanded'));
+					return;
+				}
+			}
+
 			if (event.target.closest('#offcanvas .ct-toggle-close')) {
 				closeOffcanvas(event);
 				return;
