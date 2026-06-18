@@ -379,6 +379,9 @@ body,
 	min-width: 0 !important;
 	margin: 20px 0 0;
 	padding: 0 0 0 44px;
+	background: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
 }
 
 #offcanvas .mobile-menu .menu-item.is-open > .sub-menu {
