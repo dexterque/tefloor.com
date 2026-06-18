@@ -17,19 +17,19 @@ Local admin credentials:
 From the repository root:
 
 ```sh
-/usr/local/opt/php@8.4/bin/php -S 127.0.0.1:4174 -t wp-backend
+php -S 127.0.0.1:4174 -t wp-backend
 ```
 
 ## Seed Demo Content
 
 ```sh
-/usr/local/opt/php@8.4/bin/php .tools/wp-cli.phar eval-file wp-backend/tools/seed-content.php --path=wp-backend
+php .tools/wp-cli.phar eval-file wp-backend/tools/seed-content.php --path=wp-backend
 ```
 
 ## Migrate Media
 
 ```sh
-/usr/local/opt/php@8.4/bin/php .tools/wp-cli.phar eval-file wp-backend/tools/migrate-media.php --path=wp-backend
+php .tools/wp-cli.phar eval-file wp-backend/tools/migrate-media.php --path=wp-backend
 ```
 
 This registers image files under `wp-content/uploads/YYYY/MM` as WordPress Media Library attachments, generates attachment metadata, binds homepage image settings to attachment IDs, and sets product/post featured images.
