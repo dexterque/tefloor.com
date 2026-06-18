@@ -585,10 +585,30 @@ function weiyintex_site_options( $force_refresh = false ) {
 			$stored = array();
 		}
 
-		$options = array_replace_recursive( weiyintex_site_defaults(), $stored );
+		$options = weiyintex_merge_site_options( weiyintex_site_defaults(), $stored );
 	}
 
 	return $options;
+}
+
+function weiyintex_merge_site_options( $defaults, $stored ) {
+	if ( ! is_array( $defaults ) ) {
+		return ( is_scalar( $stored ) && '' !== trim( (string) $stored ) ) ? $stored : $defaults;
+	}
+
+	if ( ! is_array( $stored ) ) {
+		return $defaults;
+	}
+
+	foreach ( $defaults as $key => $default ) {
+		if ( ! array_key_exists( $key, $stored ) ) {
+			continue;
+		}
+
+		$defaults[ $key ] = weiyintex_merge_site_options( $default, $stored[ $key ] );
+	}
+
+	return $defaults;
 }
 
 function weiyintex_site_option( $path, $default = '' ) {
