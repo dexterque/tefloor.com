@@ -1018,6 +1018,10 @@ function weiyintex_render_site_content_admin() {
 }
 
 function weiyintex_product_image_url( $post_id, $meta_key, $fallback = '', $size = 'large' ) {
+	if ( '_weiyintex_image' === $meta_key && has_post_thumbnail( $post_id ) ) {
+		return get_the_post_thumbnail_url( $post_id, $size );
+	}
+
 	$attachment_id = absint( get_post_meta( $post_id, $meta_key . '_id', true ) );
 
 	if ( $attachment_id ) {
@@ -1026,10 +1030,6 @@ function weiyintex_product_image_url( $post_id, $meta_key, $fallback = '', $size
 		if ( $url ) {
 			return $url;
 		}
-	}
-
-	if ( '_weiyintex_image' === $meta_key && has_post_thumbnail( $post_id ) ) {
-		return get_the_post_thumbnail_url( $post_id, $size );
 	}
 
 	$path = get_post_meta( $post_id, $meta_key, true );
@@ -1080,6 +1080,12 @@ function weiyintex_render_home_products( $limit = 8 ) {
 		$sku          = get_post_meta( $post_id, '_weiyintex_sku', true );
 		$image        = weiyintex_product_image_url( $post_id, '_weiyintex_image', 'wp-content/uploads/2024/08/2-6-500x500.jpg' );
 		$hover_image  = weiyintex_product_image_url( $post_id, '_weiyintex_hover_image', 'wp-content/uploads/2024/08/1-3-500x500.jpg' );
+		$custom_image = weiyintex_home_url( get_post_meta( $post_id, '_weiyintex_image', true ) );
+
+		if ( has_post_thumbnail( $post_id ) && $hover_image === $custom_image ) {
+			$hover_image = '';
+		}
+
 		$position     = 0 === $index % 4 ? ' first' : ( 3 === $index % 4 ? ' last' : '' );
 		$category_css = weiyintex_product_category_slug( $post_id );
 		$class_name   = trim( "product type-product post-{$post_id} status-publish{$position} instock {$category_css} has-post-thumbnail shipping-taxable product-type-simple" );
@@ -1088,10 +1094,10 @@ function weiyintex_render_home_products( $limit = 8 ) {
 		<li <?php post_class( $class_name, $post_id ); ?>>
 			<figure>
 				<a class="ct-media-container has-hover-effect" href="<?php echo esc_url( $permalink ); ?>" aria-label="<?php echo esc_attr( $title ); ?>">
-					<img loading="lazy" decoding="async" width="500" height="500" src="<?php echo esc_url( $image ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="ct-swap" style="aspect-ratio: 1/1;" />
 					<?php if ( $hover_image && $hover_image !== $image ) : ?>
-						<img loading="lazy" decoding="async" width="500" height="500" src="<?php echo esc_url( $hover_image ); ?>" alt="<?php echo esc_attr( $title ); ?>" itemprop="image" class="wp-post-image" style="aspect-ratio: 1/1;" />
+						<img loading="lazy" decoding="async" width="500" height="500" src="<?php echo esc_url( $hover_image ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="ct-swap" style="aspect-ratio: 1/1;" />
 					<?php endif; ?>
+					<img loading="lazy" decoding="async" width="500" height="500" src="<?php echo esc_url( $image ); ?>" alt="<?php echo esc_attr( $title ); ?>" itemprop="image" class="wp-post-image" style="aspect-ratio: 1/1;" />
 				</a>
 			</figure>
 			<h2 class="woocommerce-loop-product__title">
