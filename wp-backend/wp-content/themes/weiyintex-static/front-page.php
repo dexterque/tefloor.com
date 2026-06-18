@@ -538,6 +538,18 @@ body,
 	background-size: cover;
 }
 <?php endif; ?>
+<?php if ( weiyintex_site_image_id( 'intro.background' ) || weiyintex_site_text( 'intro.background' ) ) : ?>
+.elementor-618 .elementor-element.elementor-element-f3114ff:not(.elementor-motion-effects-element-type-background),
+.elementor-618 .elementor-element.elementor-element-f3114ff > .elementor-motion-effects-container > .elementor-motion-effects-layer {
+	background-color: #1f3659;
+	background-image:
+		linear-gradient(180deg, rgba(7, 17, 45, 0.28), rgba(7, 17, 45, 0.34)),
+		url("<?php echo esc_url( weiyintex_site_image_url( 'intro.background' ) ); ?>");
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+<?php endif; ?>
 </style>
 </head>
 

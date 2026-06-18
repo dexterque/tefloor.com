@@ -472,6 +472,8 @@ function weiyintex_site_defaults() {
 			'button_url'  => 'products',
 		),
 		'intro'           => array(
+			'background'    => '',
+			'background_id' => 0,
 			'headline_html' => 'A Professional <span style="color: #ffcc00;">Home Textile Manufacturer</span> For <span style="color: #ffcc00;">20 Years</span>. We Are Looking Forward To Serving You!',
 			'body_html'     => '<div><div data-zone-id="0" data-line-index="0" data-line="true">Weiyintex specializes in custom home textile products, including blankets, beach towels, shower curtains, and more. We offer tailored solutions to help Amazon sellers and independent brands create unique, high-quality products that stand out.</div><div data-zone-id="0" data-line-index="1" data-line="true">With fast production times, excellent customer support, and attention to detail, Weiyintex is dedicated to delivering durable and stylish items that align with your brand’s vision. Trust us to bring your custom designs to life with precision and care.</div></div>',
 		),
@@ -939,6 +941,7 @@ function weiyintex_render_site_content_admin() {
 
 			<h2>Intro and Stats</h2>
 			<?php
+			weiyintex_admin_media_field( 'intro.background', 'Intro background image', 'Used behind the Intro and Stats headline section.' );
 			weiyintex_admin_textarea_field( 'intro.headline_html', 'Intro headline HTML' );
 			weiyintex_admin_textarea_field( 'intro.body_html', 'Intro body HTML' );
 			?>
