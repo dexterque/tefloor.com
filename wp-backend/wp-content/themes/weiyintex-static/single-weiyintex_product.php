@@ -21,9 +21,9 @@ weiyintex_simple_header();
 				the_post();
 				$image = weiyintex_product_image_url( get_the_ID(), '_weiyintex_image', 'wp-content/uploads/2024/08/2-6-500x500.jpg' );
 				?>
-				<div class="weiyintex-grid" style="grid-template-columns: minmax(0, 440px) minmax(0, 1fr); align-items: start;">
-					<img src="<?php echo esc_url( $image ); ?>" alt="<?php the_title_attribute(); ?>" style="width:100%; aspect-ratio:1/1; object-fit:cover;">
-					<div>
+				<div class="weiyintex-product-detail">
+					<img class="weiyintex-product-detail-image" src="<?php echo esc_url( $image ); ?>" alt="<?php the_title_attribute(); ?>">
+					<div class="weiyintex-product-detail-content">
 						<?php the_content(); ?>
 					</div>
 				</div>
