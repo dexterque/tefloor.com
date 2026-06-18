@@ -1115,10 +1115,6 @@ function weiyintex_render_home_products( $limit = 8 ) {
 }
 
 function weiyintex_post_image_url( $post_id ) {
-	if ( has_post_thumbnail( $post_id ) ) {
-		return get_the_post_thumbnail_url( $post_id, 'medium' );
-	}
-
 	$attachment_id = absint( get_post_meta( $post_id, '_weiyintex_image_id', true ) );
 
 	if ( $attachment_id ) {
@@ -1129,6 +1125,16 @@ function weiyintex_post_image_url( $post_id ) {
 		}
 	}
 
+	if ( has_post_thumbnail( $post_id ) ) {
+		return get_the_post_thumbnail_url( $post_id, 'medium' );
+	}
+
+	$content_image = weiyintex_post_content_image_url( $post_id );
+
+	if ( $content_image ) {
+		return $content_image;
+	}
+
 	$path = get_post_meta( $post_id, '_weiyintex_image', true );
 
 	if ( $path ) {
@@ -1136,6 +1142,28 @@ function weiyintex_post_image_url( $post_id ) {
 	}
 
 	return weiyintex_home_url( 'wp-content/uploads/2021/04/55415166-300x164.jpg' );
+}
+
+function weiyintex_post_content_image_url( $post_id ) {
+	$content = get_post_field( 'post_content', $post_id );
+
+	if ( ! $content ) {
+		return '';
+	}
+
+	if ( preg_match( '/wp-image-(\d+)/', $content, $matches ) ) {
+		$url = wp_get_attachment_image_url( absint( $matches[1] ), 'medium' );
+
+		if ( $url ) {
+			return $url;
+		}
+	}
+
+	if ( preg_match( '/<img[^>]+src=[\'"]([^\'"]+)[\'"]/i', $content, $matches ) ) {
+		return esc_url_raw( $matches[1] );
+	}
+
+	return '';
 }
 
 function weiyintex_render_home_posts( $limit = 3 ) {

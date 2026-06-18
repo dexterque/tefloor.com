@@ -101,7 +101,7 @@ add_action(
 
 		$screen = get_current_screen();
 
-		if ( ! $screen || 'weiyintex_product' !== $screen->post_type ) {
+		if ( ! $screen || ! in_array( $screen->post_type, array( 'weiyintex_product', 'post' ), true ) ) {
 			return;
 		}
 
@@ -136,6 +136,7 @@ add_action(
 	'add_meta_boxes',
 	function () {
 		add_meta_box( 'weiyintex_product_details', '产品详情', 'weiyintex_render_product_details_box', 'weiyintex_product', 'normal', 'high' );
+		add_meta_box( 'weiyintex_post_image', '博客列表图片', 'weiyintex_render_post_image_box', 'post', 'normal', 'high' );
 	}
 );
 
@@ -152,6 +153,13 @@ function weiyintex_render_product_details_box( $post ) {
 	weiyintex_render_product_media_field( $post->ID, '_weiyintex_image', '主图' );
 	weiyintex_render_product_media_field( $post->ID, '_weiyintex_hover_image', '悬停图' );
 	echo '<p class="description">图片建议从 WordPress 媒体库选择。路径字段仅作为旧数据或备用图片地址保留。</p>';
+}
+
+function weiyintex_render_post_image_box( $post ) {
+	wp_nonce_field( 'weiyintex_post_image', 'weiyintex_post_image_nonce' );
+
+	weiyintex_render_product_media_field( $post->ID, '_weiyintex_image', '博客列表图片' );
+	echo '<p class="description">用于博客列表和首页 Latest from the Blog。未选择时会使用文章特色图片、正文首图或旧路径。</p>';
 }
 
 function weiyintex_render_product_media_field( $post_id, $path_key, $label ) {
@@ -206,6 +214,31 @@ add_action(
 			if ( isset( $_POST[ $key ] ) ) {
 				update_post_meta( $post_id, $key, absint( $_POST[ $key ] ) );
 			}
+		}
+	}
+);
+
+add_action(
+	'save_post_post',
+	function ( $post_id ) {
+		if ( ! isset( $_POST['weiyintex_post_image_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['weiyintex_post_image_nonce'] ) ), 'weiyintex_post_image' ) ) {
+			return;
+		}
+
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		if ( isset( $_POST['_weiyintex_image'] ) ) {
+			update_post_meta( $post_id, '_weiyintex_image', sanitize_text_field( wp_unslash( $_POST['_weiyintex_image'] ) ) );
+		}
+
+		if ( isset( $_POST['_weiyintex_image_id'] ) ) {
+			update_post_meta( $post_id, '_weiyintex_image_id', absint( $_POST['_weiyintex_image_id'] ) );
 		}
 	}
 );
