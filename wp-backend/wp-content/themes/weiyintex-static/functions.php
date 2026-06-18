@@ -1018,10 +1018,6 @@ function weiyintex_render_site_content_admin() {
 }
 
 function weiyintex_product_image_url( $post_id, $meta_key, $fallback = '', $size = 'large' ) {
-	if ( '_weiyintex_image' === $meta_key && has_post_thumbnail( $post_id ) ) {
-		return get_the_post_thumbnail_url( $post_id, $size );
-	}
-
 	$attachment_id = absint( get_post_meta( $post_id, $meta_key . '_id', true ) );
 
 	if ( $attachment_id ) {
@@ -1036,6 +1032,10 @@ function weiyintex_product_image_url( $post_id, $meta_key, $fallback = '', $size
 
 	if ( $path ) {
 		return weiyintex_home_url( $path );
+	}
+
+	if ( '_weiyintex_image' === $meta_key && has_post_thumbnail( $post_id ) ) {
+		return get_the_post_thumbnail_url( $post_id, $size );
 	}
 
 	return weiyintex_home_url( $fallback );
@@ -1080,9 +1080,8 @@ function weiyintex_render_home_products( $limit = 8 ) {
 		$sku          = get_post_meta( $post_id, '_weiyintex_sku', true );
 		$image        = weiyintex_product_image_url( $post_id, '_weiyintex_image', 'wp-content/uploads/2024/08/2-6-500x500.jpg' );
 		$hover_image  = weiyintex_product_image_url( $post_id, '_weiyintex_hover_image', 'wp-content/uploads/2024/08/1-3-500x500.jpg' );
-		$custom_image = weiyintex_home_url( get_post_meta( $post_id, '_weiyintex_image', true ) );
 
-		if ( has_post_thumbnail( $post_id ) && $hover_image === $custom_image ) {
+		if ( $hover_image === $image ) {
 			$hover_image = '';
 		}
 
