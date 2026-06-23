@@ -24,6 +24,50 @@ add_action(
 	}
 );
 
+add_filter( 'document_title_parts', 'weiyintex_document_title_parts' );
+add_action( 'wp', 'weiyintex_disable_core_canonical_when_theme_seo_is_active' );
+add_action( 'wp_head', 'weiyintex_render_seo_meta', 1 );
+
+add_action(
+	'init',
+	function () {
+		foreach ( array( 'page', 'post', 'weiyintex_product' ) as $post_type ) {
+			foreach (
+				array(
+					'_weiyintex_seo_title'       => 'sanitize_text_field',
+					'_weiyintex_seo_description' => 'sanitize_textarea_field',
+					'_weiyintex_seo_keywords'    => 'sanitize_text_field',
+				) as $meta_key => $sanitize_callback
+			) {
+				register_post_meta(
+					$post_type,
+					$meta_key,
+					array(
+						'type'              => 'string',
+						'single'            => true,
+						'show_in_rest'      => true,
+						'sanitize_callback' => $sanitize_callback,
+						'auth_callback'     => function () {
+							return current_user_can( 'edit_posts' );
+						},
+					)
+				);
+			}
+		}
+	}
+);
+
+add_action(
+	'add_meta_boxes',
+	function () {
+		foreach ( array( 'page', 'post', 'weiyintex_product' ) as $post_type ) {
+			add_meta_box( 'weiyintex_seo_settings', 'SEO 配置', 'weiyintex_render_seo_settings_box', $post_type, 'normal', 'default' );
+		}
+	}
+);
+
+add_action( 'save_post', 'weiyintex_save_seo_settings' );
+
 add_action(
 	'template_redirect',
 	function () {
@@ -315,14 +359,12 @@ function weiyintex_theme_asset( $path ) {
 }
 
 function weiyintex_simple_head( $title = '' ) {
-	$page_title = $title ? $title . ' - ' . get_bloginfo( 'name' ) : get_bloginfo( 'name' );
 	?>
 	<!doctype html>
 	<html <?php language_attributes(); ?>>
 	<head>
 		<meta charset="<?php bloginfo( 'charset' ); ?>">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
-		<title><?php echo esc_html( $page_title ); ?></title>
 		<link rel="stylesheet" href="<?php echo weiyintex_theme_asset( 'wp-content/uploads/blocksy/css/global3b36.css?ver=97531' ); ?>">
 		<link rel="stylesheet" href="<?php echo weiyintex_theme_asset( 'wp-content/plugins/elementor/assets/css/frontend-lite.min11d9.css?ver=3.21.3' ); ?>">
 		<link rel="stylesheet" href="<?php echo weiyintex_theme_asset( 'wp-content/themes/blocksy/static/bundle/main.min12fd.css?ver=2.0.42' ); ?>">
@@ -442,6 +484,16 @@ function weiyintex_home_url( $path ) {
 
 function weiyintex_site_defaults() {
 	return array(
+		'seo'             => array(
+			'site_name'            => 'Tefloor',
+			'title'                => 'Tefloor Flooring Solutions',
+			'description'          => 'Tefloor supplies carpet, LVT/SPC flooring, and custom flooring solutions for commercial and residential projects, with reliable sourcing and product support.',
+			'products_title'       => 'Flooring Products',
+			'products_description' => 'Explore Tefloor carpet, LVT/SPC flooring, and commercial flooring products for reliable project sourcing and specification support.',
+			'keywords'             => 'carpet, commercial carpet, LVT flooring, SPC flooring, flooring supplier',
+			'og_image'             => '',
+			'og_image_id'          => 0,
+		),
 		'brand'           => array(
 			'logo'    => 'wp-content/uploads/2024/08/%e5%85%ac%e5%8f%b8logo.png',
 			'logo_id' => 0,
@@ -751,6 +803,310 @@ function weiyintex_render_footer_link_list( $location, $fallback_items ) {
 	echo '</ul>';
 }
 
+function weiyintex_known_seo_plugin_active() {
+	return defined( 'WPSEO_VERSION' )
+		|| defined( 'RANK_MATH_VERSION' )
+		|| defined( 'AIOSEO_VERSION' )
+		|| defined( 'SEOPRESS_VERSION' )
+		|| class_exists( 'WPSEO_Frontend' )
+		|| function_exists( 'rank_math' )
+		|| function_exists( 'aioseo' );
+}
+
+function weiyintex_theme_seo_enabled() {
+	return ! weiyintex_known_seo_plugin_active();
+}
+
+function weiyintex_disable_core_canonical_when_theme_seo_is_active() {
+	if ( weiyintex_theme_seo_enabled() ) {
+		remove_action( 'wp_head', 'rel_canonical' );
+	}
+}
+
+function weiyintex_get_seo_post_meta( $key ) {
+	if ( ! is_singular() ) {
+		return '';
+	}
+
+	return trim( (string) get_post_meta( get_queried_object_id(), '_weiyintex_seo_' . $key, true ) );
+}
+
+function weiyintex_get_queried_excerpt_text() {
+	if ( ! is_singular() ) {
+		return '';
+	}
+
+	$post_id = get_queried_object_id();
+	$text    = has_excerpt( $post_id ) ? get_the_excerpt( $post_id ) : get_post_field( 'post_content', $post_id );
+	$text    = strip_shortcodes( $text );
+	$text    = wp_strip_all_tags( $text, true );
+	$text    = preg_replace( '/\s+/', ' ', $text );
+
+	return trim( (string) $text );
+}
+
+function weiyintex_trim_meta_text( $text, $limit = 160 ) {
+	$text = preg_replace( '/\s+/', ' ', wp_strip_all_tags( (string) $text, true ) );
+	$text = trim( (string) $text );
+
+	if ( '' === $text ) {
+		return $text;
+	}
+
+	$length = function_exists( 'mb_strlen' ) ? mb_strlen( $text ) : strlen( $text );
+
+	if ( $length <= $limit ) {
+		return $text;
+	}
+
+	if ( function_exists( 'mb_substr' ) ) {
+		return rtrim( mb_substr( $text, 0, $limit - 1 ) ) . '...';
+	}
+
+	return rtrim( substr( $text, 0, $limit - 1 ) ) . '...';
+}
+
+function weiyintex_get_seo_title() {
+	$post_title = weiyintex_get_seo_post_meta( 'title' );
+
+	if ( $post_title ) {
+		return $post_title;
+	}
+
+	if ( is_front_page() ) {
+		return weiyintex_site_text( 'seo.title', get_bloginfo( 'name' ) );
+	}
+
+	if ( is_post_type_archive( 'weiyintex_product' ) ) {
+		return weiyintex_site_text( 'seo.products_title', weiyintex_site_text( 'products.title', 'Products' ) );
+	}
+
+	if ( is_tax( 'weiyintex_product_category' ) ) {
+		$term = get_queried_object();
+		return $term && ! is_wp_error( $term ) ? $term->name : 'Product Category';
+	}
+
+	return '';
+}
+
+function weiyintex_get_seo_description() {
+	$post_description = weiyintex_get_seo_post_meta( 'description' );
+
+	if ( $post_description ) {
+		return weiyintex_trim_meta_text( $post_description, 180 );
+	}
+
+	if ( is_front_page() ) {
+		return weiyintex_trim_meta_text( weiyintex_site_text( 'seo.description' ), 180 );
+	}
+
+	if ( is_post_type_archive( 'weiyintex_product' ) ) {
+		return weiyintex_trim_meta_text( weiyintex_site_text( 'seo.products_description', weiyintex_site_text( 'seo.description' ) ), 180 );
+	}
+
+	if ( is_tax( 'weiyintex_product_category' ) ) {
+		$term_description = term_description();
+
+		if ( $term_description ) {
+			return weiyintex_trim_meta_text( $term_description, 180 );
+		}
+	}
+
+	$excerpt = weiyintex_get_queried_excerpt_text();
+
+	if ( $excerpt ) {
+		return weiyintex_trim_meta_text( $excerpt, 180 );
+	}
+
+	return weiyintex_trim_meta_text( get_bloginfo( 'description' ) ?: weiyintex_site_text( 'seo.description' ), 180 );
+}
+
+function weiyintex_get_seo_keywords() {
+	return weiyintex_get_seo_post_meta( 'keywords' ) ?: weiyintex_site_text( 'seo.keywords' );
+}
+
+function weiyintex_get_canonical_url() {
+	if ( is_front_page() ) {
+		return home_url( '/' );
+	}
+
+	if ( is_singular() ) {
+		return get_permalink();
+	}
+
+	if ( is_post_type_archive( 'weiyintex_product' ) ) {
+		return get_post_type_archive_link( 'weiyintex_product' ) ?: home_url( '/products/' );
+	}
+
+	if ( is_tax() || is_category() || is_tag() ) {
+		$term_link = get_term_link( get_queried_object() );
+		return is_wp_error( $term_link ) ? '' : $term_link;
+	}
+
+	if ( is_home() && get_option( 'page_for_posts' ) ) {
+		return get_permalink( (int) get_option( 'page_for_posts' ) );
+	}
+
+	global $wp;
+	$request_path = isset( $wp->request ) ? trim( (string) $wp->request, '/' ) : '';
+
+	return user_trailingslashit( home_url( '/' . $request_path ) );
+}
+
+function weiyintex_get_seo_image_url() {
+	if ( is_singular() ) {
+		$post_id = get_queried_object_id();
+
+		if ( 'weiyintex_product' === get_post_type( $post_id ) ) {
+			$image = weiyintex_product_image_url( $post_id, '_weiyintex_image', '', 'large' );
+
+			if ( $image && home_url( '/' ) !== $image ) {
+				return $image;
+			}
+		}
+
+		if ( 'post' === get_post_type( $post_id ) ) {
+			return weiyintex_post_image_url( $post_id );
+		}
+
+		if ( has_post_thumbnail( $post_id ) ) {
+			return get_the_post_thumbnail_url( $post_id, 'large' );
+		}
+	}
+
+	$seo_image = weiyintex_site_text( 'seo.og_image' );
+
+	if ( $seo_image || weiyintex_site_image_id( 'seo.og_image' ) ) {
+		return weiyintex_site_image_url( 'seo.og_image', 'large' );
+	}
+
+	return '';
+}
+
+function weiyintex_document_title_parts( $parts ) {
+	if ( ! weiyintex_theme_seo_enabled() ) {
+		return $parts;
+	}
+
+	$title     = weiyintex_get_seo_title();
+	$site_name = weiyintex_site_text( 'seo.site_name' );
+
+	if ( $title ) {
+		$parts['title'] = $title;
+	}
+
+	if ( $site_name ) {
+		$parts['site'] = $site_name;
+	}
+
+	return $parts;
+}
+
+function weiyintex_render_seo_meta() {
+	if ( ! weiyintex_theme_seo_enabled() ) {
+		return;
+	}
+
+	$title       = wp_get_document_title();
+	$description = weiyintex_get_seo_description();
+	$keywords    = weiyintex_get_seo_keywords();
+	$canonical   = weiyintex_get_canonical_url();
+	$image       = weiyintex_get_seo_image_url();
+
+	if ( $description ) {
+		echo '<meta name="description" content="' . esc_attr( $description ) . '">' . "\n";
+	}
+
+	if ( $keywords ) {
+		echo '<meta name="keywords" content="' . esc_attr( $keywords ) . '">' . "\n";
+	}
+
+	if ( $canonical ) {
+		echo '<link rel="canonical" href="' . esc_url( $canonical ) . '">' . "\n";
+	}
+
+	echo '<meta property="og:type" content="' . ( is_singular() ? 'article' : 'website' ) . '">' . "\n";
+	echo '<meta property="og:title" content="' . esc_attr( $title ) . '">' . "\n";
+	echo '<meta property="og:site_name" content="' . esc_attr( weiyintex_site_text( 'seo.site_name', get_bloginfo( 'name' ) ) ) . '">' . "\n";
+
+	if ( $description ) {
+		echo '<meta property="og:description" content="' . esc_attr( $description ) . '">' . "\n";
+	}
+
+	if ( $canonical ) {
+		echo '<meta property="og:url" content="' . esc_url( $canonical ) . '">' . "\n";
+	}
+
+	if ( $image ) {
+		echo '<meta property="og:image" content="' . esc_url( $image ) . '">' . "\n";
+	}
+
+	echo '<meta name="twitter:card" content="' . ( $image ? 'summary_large_image' : 'summary' ) . '">' . "\n";
+}
+
+function weiyintex_render_seo_settings_box( $post ) {
+	wp_nonce_field( 'weiyintex_seo_settings', 'weiyintex_seo_settings_nonce' );
+
+	$fields = array(
+		'_weiyintex_seo_title'       => array( 'SEO 标题', '不填则自动使用页面标题。' ),
+		'_weiyintex_seo_description' => array( 'SEO 描述', '建议 120-180 个字符；不填则自动取摘要或正文。' ),
+		'_weiyintex_seo_keywords'    => array( 'SEO 关键词', '可选；Google 不用于排名，但保留给其他搜索引擎或内部管理。' ),
+	);
+
+	foreach ( $fields as $key => $field ) {
+		$value = get_post_meta( $post->ID, $key, true );
+		?>
+		<p>
+			<label for="<?php echo esc_attr( $key ); ?>"><strong><?php echo esc_html( $field[0] ); ?></strong></label>
+			<?php if ( '_weiyintex_seo_description' === $key ) : ?>
+				<textarea id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>" class="widefat" rows="3"><?php echo esc_textarea( $value ); ?></textarea>
+			<?php else : ?>
+				<input id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>" type="text" value="<?php echo esc_attr( $value ); ?>" class="widefat">
+			<?php endif; ?>
+			<span class="description"><?php echo esc_html( $field[1] ); ?></span>
+		</p>
+		<?php
+	}
+}
+
+function weiyintex_save_seo_settings( $post_id ) {
+	if ( ! isset( $_POST['weiyintex_seo_settings_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['weiyintex_seo_settings_nonce'] ) ), 'weiyintex_seo_settings' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	if ( ! in_array( get_post_type( $post_id ), array( 'page', 'post', 'weiyintex_product' ), true ) ) {
+		return;
+	}
+
+	$fields = array(
+		'_weiyintex_seo_title'       => 'sanitize_text_field',
+		'_weiyintex_seo_description' => 'sanitize_textarea_field',
+		'_weiyintex_seo_keywords'    => 'sanitize_text_field',
+	);
+
+	foreach ( $fields as $key => $sanitize_callback ) {
+		if ( ! isset( $_POST[ $key ] ) ) {
+			continue;
+		}
+
+		$value = call_user_func( $sanitize_callback, wp_unslash( $_POST[ $key ] ) );
+
+		if ( '' === trim( (string) $value ) ) {
+			delete_post_meta( $post_id, $key );
+		} else {
+			update_post_meta( $post_id, $key, $value );
+		}
+	}
+}
+
 function weiyintex_admin_html_paths() {
 	return array(
 		'intro.headline_html',
@@ -923,6 +1279,17 @@ function weiyintex_render_site_content_admin() {
 		<p>编辑当前主题使用的首页、联系信息和页脚内容。</p>
 		<form method="post">
 			<?php wp_nonce_field( 'weiyintex_site_content', 'weiyintex_site_content_nonce' ); ?>
+
+			<h2>SEO 基础配置</h2>
+			<?php
+			weiyintex_admin_text_field( 'seo.site_name', 'SEO 站点名', '用于搜索标题后缀和社交分享站点名。' );
+			weiyintex_admin_text_field( 'seo.title', '默认 SEO 标题', '主要用于首页；内页可在编辑页面里单独覆盖。' );
+			weiyintex_admin_textarea_field( 'seo.description', '默认 SEO 描述', '首页默认描述，也作为其他页面缺少摘要时的兜底。' );
+			weiyintex_admin_text_field( 'seo.products_title', '产品列表 SEO 标题', '用于 /products/ 产品列表页。' );
+			weiyintex_admin_textarea_field( 'seo.products_description', '产品列表 SEO 描述', '用于 /products/ 产品列表页。' );
+			weiyintex_admin_text_field( 'seo.keywords', '默认 SEO 关键词', '可选。Google 不用于排名，但可以保留给其他搜索引擎或内部管理。' );
+			weiyintex_admin_media_field( 'seo.og_image', '默认分享图', '用于社交分享预览；建议使用横向图片。' );
+			?>
 
 			<h2>品牌</h2>
 			<?php weiyintex_admin_media_field( 'brand.logo', 'Logo 图片', '从媒体库选择。文本路径仅作为备用。' ); ?>

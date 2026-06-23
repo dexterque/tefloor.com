@@ -38,4 +38,7 @@ The homepage is rendered by `wp-content/themes/weiyintex-static/front-page.php`.
 Homepage copy, images, contact details, footer copy, and popup form labels are managed in WordPress admin under `Appearance -> Site Content`.
 Products are managed in WordPress admin under `Products`; blog cards use normal Posts.
 
+SEO defaults are also managed under `Appearance -> Site Content`.
+Individual Pages, Posts, and Products can override SEO title, description, and keywords from the `SEO 配置` meta box in the editor.
+
 The seed script also creates the main pages (`About Us`, `Blog`, `Contact Us`), dynamic products/posts, the `Main Menu`, and footer menus assigned to the theme's `Primary Menu`, `Footer Company Menu`, and `Footer Product Menu` locations. The theme rewrites mirrored static URLs to the local WordPress URL and uses absolute `/wp-content/...` asset paths so subpages keep their CSS.

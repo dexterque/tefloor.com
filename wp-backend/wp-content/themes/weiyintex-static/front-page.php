@@ -4,13 +4,10 @@
 <!-- Mirrored from weiyintex.com/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 16 Jun 2026 07:34:14 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
 <head>
-	
+
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
 	<link rel="profile" href="https://gmpg.org/xfn/11">
-
-	<title><?php bloginfo( 'name' ); ?></title>
-<meta name='robots' content='max-image-preview:large' />
 <link rel='dns-prefetch' href='http://fonts.googleapis.com/' />
 <link rel="alternate" type="application/rss+xml" title="www.weiyintex.com &raquo; Feed" href="https://weiyintex.com/feed/" />
 <link rel="alternate" type="application/rss+xml" title="www.weiyintex.com &raquo; Comments Feed" href="https://weiyintex.com/comments/feed/" />
@@ -100,8 +97,6 @@ if (window.WEIYINTEX_ENABLE_WOOCOMMERCE_AJAX) {
 <link rel="https://api.w.org/" href="https://weiyintex.com/wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="wp-json/wp/v2/pages/618.html" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="xmlrpc0db0.php?rsd" />
 <meta name="generator" content="WordPress 6.9.4" />
 <meta name="generator" content="WooCommerce 8.8.7" />
-<link rel="canonical" href="index.html" />
-<link rel='shortlink' href='index.html' />
 <noscript><link rel='stylesheet' href='wp-content/themes/blocksy/static/bundle/no-scripts.min.css' type='text/css'></noscript>
 	<noscript><style>.woocommerce-product-gallery{ opacity: 1 !important; }</style></noscript>
 	<meta name="generator" content="Elementor 3.21.3; features: e_optimized_assets_loading, e_optimized_css_loading, e_font_icon_svg, additional_custom_breakpoints, e_lazyload; settings: css_print_method-external, google_font-enabled, font_display-swap">
