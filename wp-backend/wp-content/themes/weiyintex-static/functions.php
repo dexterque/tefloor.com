@@ -999,6 +999,8 @@ function weiyintex_document_title_parts( $parts ) {
 		$parts['site'] = $site_name;
 	}
 
+	unset( $parts['tagline'] );
+
 	return $parts;
 }
 
