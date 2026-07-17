@@ -423,6 +423,10 @@ function weiyintex_simple_head( $title = '' ) {
 			.weiyintex-blog-card a { color: inherit; text-decoration: none; }
 			.weiyintex-blog-more { margin-top: auto; color: var(--tefloor-blue) !important; font-weight: 700; }
 			.weiyintex-blog-empty { margin: 0; color: #4f5668; }
+			.weiyintex-blog-pagination { margin-top: 42px; }
+			.weiyintex-blog-pagination .page-numbers { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0; padding: 0; list-style: none; }
+			.weiyintex-blog-pagination a, .weiyintex-blog-pagination span { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; min-height: 42px; padding: 0 13px; border: 1px solid rgba(39, 59, 146, 0.18); border-radius: 6px; color: var(--tefloor-blue); background: #fff; text-decoration: none; font-weight: 600; }
+			.weiyintex-blog-pagination a:hover, .weiyintex-blog-pagination a:focus-visible, .weiyintex-blog-pagination .current { border-color: var(--tefloor-blue); color: #fff; background: var(--tefloor-blue); outline: none; }
 			.weiyintex-shell-footer { border-top: 1px solid #ececf0; padding: 28px 0; color: #696773; font-size: 13px; }
 			@media (max-width: 700px) { .weiyintex-product-detail { grid-template-columns: 1fr; justify-items: center; gap: 22px; } .weiyintex-product-detail-image { max-width: 420px; margin: 0 auto; } .weiyintex-product-detail-content { width: 100%; } }
 			@media (max-width: 900px) { .weiyintex-grid, .weiyintex-blog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .weiyintex-shell-nav { align-items: flex-start; flex-direction: column; min-height: 0; gap: 14px; padding: 18px 24px 14px; } .weiyintex-shell-logo img { width: 128px; } .weiyintex-shell-menu { width: 100%; justify-content: flex-start; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .weiyintex-shell-menu::-webkit-scrollbar { display: none; } .weiyintex-shell-menu ul#menu-main-menu { flex-wrap: nowrap; min-width: max-content; gap: 4px; } .weiyintex-shell-menu a.ct-menu-link { min-height: 36px; padding: 0 12px !important; font-size: 14px !important; } }
@@ -1594,12 +1598,14 @@ function weiyintex_render_home_posts( $limit = 3 ) {
 	wp_reset_postdata();
 }
 
-function weiyintex_render_blog_posts( $limit = 12 ) {
+function weiyintex_render_blog_posts( $limit = 9 ) {
+	$current_page = max( 1, absint( get_query_var( 'paged' ) ), absint( get_query_var( 'page' ) ) );
 	$posts = new WP_Query(
 		array(
 			'post_type'           => 'post',
 			'post_status'         => 'publish',
 			'posts_per_page'      => $limit,
+			'paged'               => $current_page,
 			'ignore_sticky_posts' => true,
 		)
 	);
@@ -1640,6 +1646,20 @@ function weiyintex_render_blog_posts( $limit = 12 ) {
 	}
 
 	echo '</div>';
+
+	$pagination = paginate_links(
+		array(
+			'current'   => $current_page,
+			'total'     => $posts->max_num_pages,
+			'type'      => 'list',
+			'prev_text' => '&larr; Previous',
+			'next_text' => 'Next &rarr;',
+		)
+	);
+
+	if ( $pagination ) {
+		echo '<nav class="weiyintex-blog-pagination" aria-label="Blog pagination">' . wp_kses_post( $pagination ) . '</nav>';
+	}
 
 	wp_reset_postdata();
 }
